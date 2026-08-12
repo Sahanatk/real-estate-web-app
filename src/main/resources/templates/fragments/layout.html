@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css?v=2}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Sindhu Jakka — Seattle Real Estate</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<main th:fragment="main(content)">
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand"
+               th:href="@{/api/agent/profile}"
+               th:text="${agent != null ? agent.name : 'Sindhu Jakka'}">
+                Sindhu Jakka
+            </a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto align-items-center">
+                    <a class="nav-link" th:href="@{/}">Home</a>
+                    <a class="nav-link" th:href="@{/listings}">Listings</a>
+                    <a class="nav-link" th:href="@{/services}">Services</a>
+                    <a class="nav-link" th:href="@{/reviews}">Reviews</a>
+                    <a class="nav-link" th:href="@{/contact}">Contact</a>
+
+                    <!-- Show Login only when NOT logged in -->
+                    <a sec:authorize="isAnonymous()"
+                       class="btn-nav-login"
+                       th:href="@{/login}">Login</a>
+
+                    <!-- Show Logout when logged in -->
+                    <a sec:authorize="isAuthenticated()"
+                       class="btn-nav-logout"
+                       th:href="@{/logout}">Logout</a>
+
+                    <!-- Admin only -->
+                    <a sec:authorize="hasRole('ADMIN')"
+                       class="nav-admin-link"
+                       th:href="@{/admin}">
+                        &#9670; Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Page content ── -->
+    <div th:replace="${content}"></div>
+
+    <!-- ── Footer ── -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <span class="footer-brand" th:text="${agent != null ? agent.name : 'Sindhu Jakka'}">Sindhu Jakka</span>
+                    <p class="footer-tagline">Seattle Real Estate Agent<br>Licensed since 2018</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <p class="footer-heading">Quick Links</p>
+                    <div class="footer-links">
+                        <a th:href="@{/}">Home</a>
+                        <a th:href="@{/listings}">Listings</a>
+                        <a th:href="@{/services}">Services</a>
+                        <a th:href="@{/reviews}">Reviews</a>
+                        <a th:href="@{/contact}">Contact</a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <p class="footer-heading">For Clients</p>
+                    <div class="footer-links">
+                        <a th:href="@{/register}">Create Account</a>
+                        <a th:href="@{/login}">Login</a>
+                        <a th:href="@{/review-form}">Leave a Review</a>
+                        <a th:href="@{/forgot-password}">Reset Password</a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <p class="footer-heading">Specialty</p>
+                    <div class="footer-links">
+                        <a th:href="@{/services}">Buying</a>
+                        <a th:href="@{/services}">Selling</a>
+                        <a th:href="@{/services}">Investing</a>
+                        <a th:href="@{/services}">Relocation</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="d-flex justify-content-between align-items-center footer-bottom flex-wrap gap-2">
+                <span>&copy; 2026 <span th:text="${agent != null ? agent.name : 'Sindhu Jakka'}">Sindhu Jakka</span>. All rights reserved.</span>
+                <span>Seattle, WA <span class="gold-dot">&#9670;</span> Real Estate</span>
+            </div>
+        </div>
+    </footer>
+
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true,
+        offset: 80
+    });
+</script>
+</body>
+</html>

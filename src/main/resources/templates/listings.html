@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listings — Sindhu Jakka Real Estate</title>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: main(~{::section})}">
+  <section>
+
+    <!-- Hero -->
+    <div class="listings-hero">
+      <div class="container text-center">
+        <h1>Available Listings</h1>
+        <div class="gold-line"></div>
+        <p>Explore properties across Seattle — each one handpicked and represented with care.</p>
+      </div>
+    </div>
+
+    <div class="container pb-5 pt-4">
+      <div th:if="${success}"
+           style="background:#e8f5e9; border-left:3px solid #2e7d32; border-radius:4px;
+                padding:1rem 1.25rem; margin-bottom:1.5rem; font-family:'Roboto',sans-serif;
+                font-size:0.9rem; color:#2e7d32;"
+           th:text="${success}">
+      </div>
+
+      <div th:if="${error}"
+           style="background:#fce4ec; border-left:3px solid #c62828; border-radius:4px;
+                padding:1rem 1.25rem; margin-bottom:1.5rem; font-family:'Roboto',sans-serif;
+                font-size:0.9rem; color:#c62828;"
+           th:text="${error}">
+      </div>
+      <div class="row g-4">
+        <div th:each="listing : ${listings}" class="col-md-4" data-aos="fade-up">
+          <div class="listing-card">
+
+            <img th:src="${listing.photos != null and !listing.photos.isEmpty()} ? ${listing.photos[0]} : ''"
+                 class="card-img-top"
+                 alt="Listing photo"
+                 onerror="this.style.display='none';">
+
+            <div class="card-body">
+              <h5 class="card-title" th:text="${listing.street}">123 Main St</h5>
+              <p class="listing-location">
+                <span th:text="${listing.city}">City</span>,
+                <span th:text="${listing.state}">State</span>
+                <span th:text="${listing.zipCode}">Zip</span>
+              </p>
+              <p class="listing-price"
+                 th:text="'$' + ${#numbers.formatDecimal(listing.listingPrice, 1, 'COMMA', 0, 'POINT')}">
+                $500,000
+              </p>
+              <div class="listing-specs">
+                <span th:if="${listing.bedrooms != null}"
+                      th:text="${listing.bedrooms} + ' bd'"></span>
+                <span th:if="${listing.bedrooms != null and listing.bathrooms != null}"> &middot; </span>
+                <span th:if="${listing.bathrooms != null}"
+                      th:text="${listing.bathrooms} + ' ba'"></span>
+                <span th:if="${listing.squareFootage != null}"> &middot; </span>
+                <span th:if="${listing.squareFootage != null}"
+                      th:text="${#numbers.formatDecimal(listing.squareFootage, 1, 'COMMA', 0, 'POINT')} + ' sqft'"></span>
+              </div>
+              <span th:if="${listing.status != null}"
+                    class="status-badge"
+                    th:classappend="'status-' + ${listing.status}"
+                    th:text="${listing.status}">ACTIVE</span>
+              <br>
+              <a th:href="@{/listings/{id}(id=${listing.listingId})}"
+                 class="btn-view-details">
+                View Details &#8594;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p th:if="${listings == null or listings.isEmpty()}"
+         class="text-muted fst-italic mt-4 text-center">
+        No listings available at this time.
+      </p>
+
+    </div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 80 });</script>
+</body>
+</html>

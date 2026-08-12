@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Agent Profile — Sindhu Jakka Real Estate</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: main(~{::section})}">
+  <section class="container py-5">
+
+    <!-- Bio Card -->
+    <div class="bio-card mb-5" data-aos="fade-up">
+      <div class="row align-items-center">
+
+        <!-- Agent photo + rating -->
+        <div class="col-md-4 text-center mb-4 mb-md-0">
+          <img th:src="@{${agent.profilePictureUrl}}"
+               class="rounded-circle mb-3"
+               style="width:160px; height:160px; object-fit:cover; border:4px solid var(--accent-gold,#B29476);"
+               alt="Agent Photo">
+          <h2 th:text="${agent.name}">Agent Name</h2>
+          <p class="speciality" th:text="${agent.speciality}">Luxury Specialist</p>
+          <div class="avg-rating">
+            <span th:each="i : ${#numbers.sequence(1, 5)}">&#9733;</span>
+          </div>
+          <p class="avg-rating-text mt-1"
+             th:text="${averageRating != null} ? |(${#numbers.formatDecimal(averageRating, 1, 1)} / 5.0)| : 'No ratings yet'">
+            4.5 / 5.0
+          </p>
+        </div>
+
+        <!-- Bio text -->
+        <div class="col-md-8">
+          <h3 class="about-heading">About Me</h3>
+          <p class="bio-text" th:text="${agent.biography}">Biography goes here...</p>
+        </div>
+
+      </div>
+    </div>
+
+    <hr style="border-color: #f0ede8; margin: 2rem 0;">
+
+    <!-- Reviews -->
+    <div class="review-section mt-4">
+      <h3 class="review-section-heading mb-4">Latest Reviews</h3>
+
+      <div th:if="${success}" class="alert alert-success mb-4">
+        Thank you! Your review has been submitted and is pending approval.
+      </div>
+
+      <div class="row g-3">
+        <div th:each="review : ${reviews}" class="col-md-4" data-aos="fade-up">
+          <div class="card review-card p-4">
+            <div class="star-rating mb-2">
+              <span th:each="i : ${#numbers.sequence(1, review.rating)}">&#9733;</span>
+            </div>
+            <p class="review-text fst-italic mb-3" th:text="${review.comment}">Comment</p>
+            <small class="reviewer-name"
+                   th:text="${review.user != null ? review.user.fullName : 'Anonymous'}">
+              Reviewer Name
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${reviews == null or reviews.isEmpty()}" class="text-muted fst-italic mt-3">
+        No reviews yet — be the first to leave one!
+      </div>
+
+      <a th:href="@{/review-form}" class="btn-leave-review mt-4 d-inline-block">
+        Leave a Review
+      </a>
+    </div>
+
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 80 });</script>
+</body>
+</html>

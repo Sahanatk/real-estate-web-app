@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${listing.street} + ' — Sindhu Jakka Real Estate'">Listing Details</title>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const photos = /*[[${listing.photos}]]*/ [];
+    let currentIndex = 0;
+
+    function changeMainPhoto(thumb) {
+        const src = thumb.getAttribute('data-src');
+        document.getElementById('mainPhoto').src = src;
+        currentIndex = photos.indexOf(src);
+        document.querySelectorAll('.listing-thumb').forEach(t => {
+            t.style.border = '2px solid transparent';
+        });
+        thumb.style.border = '2px solid #B29476';
+    }
+
+    function navigatePhoto(direction) {
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = photos.length - 1;
+        if (currentIndex >= photos.length) currentIndex = 0;
+        const mainPhoto = document.getElementById('mainPhoto');
+        mainPhoto.src = photos[currentIndex];
+        document.querySelectorAll('.listing-thumb').forEach((t, i) => {
+            t.style.border = i === currentIndex ? '2px solid #B29476' : '2px solid transparent';
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const mainPhoto = document.getElementById('mainPhoto');
+        if (mainPhoto) {
+            mainPhoto.addEventListener('click', function() {
+                currentIndex = photos.findIndex(p => this.src.includes(p.split('/').pop()));
+                showModalPhoto(currentIndex);
+                new bootstrap.Modal(document.getElementById('photoModal')).show();
+            });
+        }
+    });
+
+    function showModalPhoto(index) {
+        if (index < 0) index = photos.length - 1;
+        if (index >= photos.length) index = 0;
+        currentIndex = index;
+        document.getElementById('modalPhoto').src = photos[index];
+        document.getElementById('photoCounter').textContent = (index + 1) + ' / ' + photos.length;
+    }
+    function prevPhoto() { showModalPhoto(currentIndex - 1); }
+    function nextPhoto() { showModalPhoto(currentIndex + 1); }
+
+    document.addEventListener('keydown', function(e) {
+        const modal = document.getElementById('photoModal');
+        if (modal && modal.classList.contains('show')) {
+            if (e.key === 'ArrowLeft') prevPhoto();
+            if (e.key === 'ArrowRight') nextPhoto();
+        }
+    });
+    /*]]>*/
+  </script>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: main(~{::section})}">
+  <section class="container py-5">
+
+    <a th:href="@{/listings}" class="back-link">&#8592; Back to Listings</a>
+
+    <div sec:authorize="hasRole('ADMIN')" class="d-flex gap-2 align-items-center mb-4">
+      <a th:href="@{/admin/listings/{id}/edit(id=${listing.listingId})}"
+         class="btn-view-details">
+        &#9998; Edit Listing
+      </a>
+      <form th:action="@{/admin/listings/{id}/delete(id=${listing.listingId})}"
+            method="post"
+            onsubmit="return confirm('Delete this listing?')">
+        <button type="submit"
+                style="background:#c62828; color:white; border:none; border-radius:2px;
+                   padding:0.5rem 1.25rem; font-family:'Roboto',sans-serif;
+                   font-size:0.8rem; font-weight:600; letter-spacing:1px;
+                   text-transform:uppercase; cursor:pointer;">
+          &#10005; Delete
+        </button>
+      </form>
+    </div>
+
+    <!-- Photo Gallery -->
+    <div class="row mb-4" th:if="${listing.photos != null and !listing.photos.isEmpty()}">
+      <div class="col-12 mb-2">
+        <div style="position: relative; border-radius: 12px; overflow: hidden;">
+          <img th:src="${listing.photos[0]}"
+               id="mainPhoto"
+               class="img-fluid w-100"
+               style="height: 500px; object-fit: cover; cursor: pointer; display: block;"
+               th:attr="data-src=${listing.photos[0]}"
+               alt="Main listing photo">
+
+          <!-- Left arrow -->
+          <button onclick="navigatePhoto(-1)"
+                  style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+                         background: rgba(0,0,0,0.5); color: white; border: none;
+                         border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem;
+                         cursor: pointer; z-index: 10; display: flex;
+                         align-items: center; justify-content: center;">
+            &#8592;
+          </button>
+
+          <!-- Right arrow -->
+          <button onclick="navigatePhoto(1)"
+                  style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+                         background: rgba(0,0,0,0.5); color: white; border: none;
+                         border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem;
+                         cursor: pointer; z-index: 10; display: flex;
+                         align-items: center; justify-content: center;">
+            &#8594;
+          </button>
+        </div>
+      </div>
+
+      <!-- Thumbnail strip -->
+      <div class="col-12">
+        <div class="d-flex gap-2 flex-wrap mt-2">
+          <img th:each="photo, stat : ${listing.photos}"
+               th:src="${photo}"
+               th:attr="data-src=${photo}"
+               th:classappend="${stat.index == 0} ? 'active-thumb' : ''"
+               class="listing-thumb rounded"
+               style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;
+                      border: 2px solid transparent; transition: border 0.2s;"
+               alt="Listing photo"
+               onclick="changeMainPhoto(this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div class="modal fade" id="photoModal" tabindex="-1">
+      <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="modal-content bg-dark">
+          <div class="modal-header border-0">
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-center p-0 d-flex align-items-center justify-content-center">
+            <img id="modalPhoto" src=""
+                 style="width: 100%; height: auto; max-height: 90vh; object-fit: contain;"
+                 alt="Full size photo">
+          </div>
+          <div class="modal-footer border-0 justify-content-center gap-3">
+            <button class="btn btn-outline-light btn-sm" onclick="prevPhoto()">&#8592; Prev</button>
+            <span id="photoCounter" class="text-white small"></span>
+            <button class="btn btn-outline-light btn-sm" onclick="nextPhoto()">Next &#8594;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Property details + contact -->
+    <div class="row g-5" data-aos="fade-up">
+
+      <!-- Left: details -->
+      <div class="col-md-8">
+        <h1 class="property-address" th:text="${listing.street}">123 Main St</h1>
+        <p class="property-location"
+           th:text="${listing.city + ', ' + listing.state + ' ' + listing.zipCode}">
+          City, State
+        </p>
+        <p class="property-price"
+           th:text="'$' + ${#numbers.formatDecimal(listing.listingPrice, 0, 'COMMA', 0, 'POINT')}">
+          $500,000
+        </p>
+        <span th:if="${listing.status != null}"
+              class="status-badge"
+              th:classappend="'status-' + ${listing.status}"
+              th:text="${listing.status}">ACTIVE</span>
+
+        <hr style="border-color: #f0ede8; margin: 1.5rem 0;">
+
+        <h4 class="section-heading">Property Details</h4>
+        <div class="detail-grid">
+          <div class="detail-item" th:if="${listing.propertyType != null}">
+            <strong>Type</strong>
+            <span th:text="${listing.propertyType}"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.bedrooms != null}">
+            <strong>Bedrooms</strong>
+            <span th:text="${listing.bedrooms}"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.bathrooms != null}">
+            <strong>Bathrooms</strong>
+            <span th:text="${listing.bathrooms}"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.squareFootage != null}">
+            <strong>Square Footage</strong>
+            <span th:text="${#numbers.formatDecimal(listing.squareFootage, 0, 'COMMA', 0, 'POINT')} + ' sqft'"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.lotSize != null}">
+            <strong>Lot Size</strong>
+            <span th:text="${listing.lotSize}"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.yearBuilt != null}">
+            <strong>Year Built</strong>
+            <span th:text="${listing.yearBuilt}"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.garageDetails != null}">
+            <strong>Garage</strong>
+            <span th:text="${listing.garageDetails}"></span>
+          </div>
+          <div class="detail-item" th:if="${listing.hoaFees != null}">
+            <strong>HOA Fees</strong>
+            <span th:text="'$' + ${listing.hoaFees} + ' / mo'"></span>
+          </div>
+        </div>
+
+        <div th:if="${listing.propertyFeatures != null and !listing.propertyFeatures.isEmpty()}">
+          <h4 class="section-heading">Features</h4>
+          <div class="features-list">
+            <span th:each="feature : ${listing.propertyFeatures}"
+                  class="feature-tag"
+                  th:text="${feature}"></span>
+          </div>
+        </div>
+
+        <div th:if="${listing.taxInformation != null and !listing.taxInformation.isEmpty()}">
+          <h4 class="section-heading">Tax Information</h4>
+          <p style="font-family:'Roboto',sans-serif; color:#666; font-size:0.9rem;"
+             th:text="${listing.taxInformation}"></p>
+        </div>
+      </div>
+
+      <!-- Add this at the bottom of the left column, after tax information -->
+      <div sec:authorize="hasRole('ADMIN')" class="mt-4 p-3"
+           style="background:#f7f5f1; border-radius:8px; border-left:3px solid var(--accent-gold);">
+        <h5 style="font-family:'Playfair Display',serif; color:#14233B; font-size:1rem;">
+          Update Photos
+        </h5>
+        <form th:action="@{/admin/listings/{id}/update-photos(id=${listing.listingId})}"
+              method="post" enctype="multipart/form-data">
+          <input type="file" name="photoFiles" multiple accept="image/*"
+                 class="form-control mb-2">
+          <button type="submit" class="btn-publish" style="padding:0.5rem 1.25rem;">
+            Upload &#8594;
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: contact card -->
+      <div class="col-md-4">
+        <div class="contact-card">
+          <h5>Interested in this property?</h5>
+          <p>I'd love to tell you more about it. Reach out and let's talk.</p>
+          <a th:href="@{/contact/{id}(id=${listing.listingId})}"
+             class="btn-contact-agent">
+            Contact Agent
+          </a>
+          <div class="gold-divider" style="width:100%; height:1px; background:#f0ede8; margin:1.25rem 0;"></div>
+          <div class="agent-mini">
+            <div>
+              <div class="agent-mini-name"
+                   th:text="${agent != null ? agent.name : 'Sindhu Jakka'}">Sindhu Jakka</div>
+              <div class="agent-mini-title"
+                   th:text="${agent != null ? agent.speciality : 'Seattle Real Estate'}">Seattle Real Estate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 80 });</script>
+</body>
+</html>

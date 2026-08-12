@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Sidebar Fragment</title>
+</head>
+<body>
+<nav th:fragment="sidebar(activePage)" class="admin-sidebar">
+
+  <!-- Brand -->
+  <div class="admin-sidebar-brand">
+    <span class="brand-name">Admin Panel</span>
+    <span class="brand-sub">Sindhu Jakka Real Estate</span>
+  </div>
+
+  <!-- Overview -->
+  <div class="sidebar-heading">Overview</div>
+  <a class="sidebar-link"
+     th:classappend="${activePage == 'dashboard'} ? ' active' : ''"
+     th:href="@{/admin}">
+    <span class="sidebar-icon">&#9632;</span> Dashboard
+  </a>
+
+  <!-- Content -->
+  <div class="sidebar-heading">Content</div>
+  <a class="sidebar-link"
+     th:classappend="${activePage == 'reviews'} ? ' active' : ''"
+     th:href="@{/admin/reviews}">
+    <span class="sidebar-icon">&#9733;</span> Reviews
+    <span th:if="${pendingReviewCount != null and pendingReviewCount > 0}"
+          class="sidebar-badge"
+          th:text="${pendingReviewCount}">3</span>
+  </a>
+  <a class="sidebar-link"
+     th:classappend="${activePage == 'listings'} ? ' active' : ''"
+     th:href="@{/listings}">
+    <span class="sidebar-icon">&#8962;</span> Listings
+  </a>
+  <a class="sidebar-link"
+     th:classappend="${activePage == 'newListing'} ? ' active' : ''"
+     th:href="@{/admin/newListing}">
+    <span class="sidebar-icon">&#43;</span> Add New Listing
+  </a>
+
+  <!-- Communication -->
+  <div class="sidebar-heading">Communication</div>
+  <a class="sidebar-link"
+     th:classappend="${activePage == 'messages'} ? ' active' : ''"
+     th:href="@{/admin/messages}">
+    <span class="sidebar-icon">&#9993;</span> Messages
+    <span th:if="${newInquiryCount != null and newInquiryCount > 0}"
+          class="sidebar-badge sidebar-badge-red"
+          th:text="${newInquiryCount}">2</span>
+  </a>
+
+  <!-- Account -->
+  <div class="sidebar-heading">Account</div>
+  <a class="sidebar-link" th:href="@{/}">
+    <span class="sidebar-icon">&#8592;</span> Back to Site
+  </a>
+  <a class="sidebar-link sidebar-link-logout" th:href="@{/logout}">
+    <span class="sidebar-icon">&#10005;</span> Logout
+  </a>
+
+</nav>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews — Sindhu Jakka Real Estate</title>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: main(~{::section})}">
+  <section>
+
+    <!-- Hero -->
+    <div class="reviews-hero">
+      <div class="container text-center">
+        <h1>Client Reviews</h1>
+        <div class="gold-line"></div>
+        <p>Real experiences from real clients — here's what they have to say.</p>
+      </div>
+    </div>
+
+    <div class="container py-5">
+
+      <!-- Success message -->
+      <div th:if="${success}"
+           style="background:#e8f5e9; border-left:3px solid #2e7d32; border-radius:4px;
+                  padding:1rem 1.25rem; margin-bottom:2rem; font-family:'Roboto',sans-serif;
+                  font-size:0.9rem; color:#2e7d32;">
+        &#10003; Thank you! Your review has been submitted and is pending approval.
+      </div>
+
+      <!-- Average rating -->
+
+      <div th:if="${averageRating != null}" class="text-center mb-5" data-aos="fade-up">
+        <div style="color:#FFB800; font-size:1.8rem; letter-spacing:4px;">
+          <span th:each="i : ${#numbers.sequence(1, 5)}">&#9733;</span>
+        </div>
+        <p style="font-family:'Roboto',sans-serif; font-style:italic; color:#888; margin-top:0.5rem;"
+           th:text="'Average rating: ' + ${#numbers.formatDecimal(averageRating, 1, 1)} + ' / 5.0'">
+          Average rating: 4.5 / 5.0
+        </p>
+      </div>
+
+      <!-- Reviews grid -->
+      <div class="row g-4" th:if="${reviews != null and !reviews.isEmpty()}">
+        <div th:each="review : ${reviews}" class="col-md-4" data-aos="fade-up">
+          <div class="card review-card p-4">
+            <div class="star-rating mb-2">
+              <span th:each="i : ${#numbers.sequence(1, review.rating)}">&#9733;</span>
+            </div>
+            <p class="review-text fst-italic mb-3" th:text="${review.comment}">Review text</p>
+            <small class="reviewer-name"
+                   th:text="${review.user != null ? review.user.fullName : 'Anonymous'}">
+              Reviewer
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Reviews Section -->
+      <div th:if="${googleReviews != null and !googleReviews.isEmpty()}" class="mt-5">
+        <h2 class="section-heading">Google Reviews</h2>
+        <div class="d-flex align-items-center mb-4">
+          <span style="color:#FFB800; font-size:1.3rem; letter-spacing:2px;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span th:if="${googleRating != null}"
+                style="font-family:'Roboto',sans-serif; color:#888; margin-left:0.75rem;"
+                th:text="${#numbers.formatDecimal(googleRating, 1, 1)} + ' / 5.0 on Google'">
+            5.0 / 5.0 on Google
+        </span>
+          <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
+               style="height:20px; margin-left:0.75rem;" alt="Google">
+        </div>
+        <div class="row g-4">
+          <div th:each="review : ${googleReviews}" class="col-md-4" data-aos="fade-up">
+            <div class="card review-card p-4">
+              <div class="star-rating mb-2">
+                <span th:each="i : ${#numbers.sequence(1, review['rating'])}">&#9733;</span>
+              </div>
+              <p class="review-text fst-italic mb-3"
+                 th:text="${review['text']}">Review text</p>
+              <small class="reviewer-name"
+                     th:text="${review['author_name']}">Reviewer</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div th:if="${reviews == null or reviews.isEmpty()}" class="text-center py-5">
+        <p style="font-family:'Roboto',sans-serif; font-style:italic; color:#aaa;">
+          No reviews yet — be the first to share your experience!
+        </p>
+      </div>
+
+      <!-- CTA band -->
+      <div class="cta-band mt-5" data-aos="fade-up">
+        <h3>Worked with Sindhu?</h3>
+        <p>Your feedback helps others make confident real estate decisions.</p>
+        <a th:href="@{/review-form}" class="btn-leave-review">Leave a Review &#8594;</a>
+      </div>
+
+    </div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 80 });</script>
+</body>
+</html>

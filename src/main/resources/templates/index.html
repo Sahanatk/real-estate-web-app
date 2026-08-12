@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sindhu Jakka — Seattle Real Estate</title>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: main(~{::section})}">
+  <section class="container py-5">
+
+    <!-- Hero Card -->
+    <div class="hero-card" data-aos="fade-up">
+      <div class="row g-0 align-items-stretch">
+
+        <!-- Photo panel -->
+        <div class="col-md-6 hero-photo-panel">
+          <img th:if="${agent.homePageUrl != null}"
+               th:src="@{${agent.homePageUrl}}"
+               alt="Agent Photo"/>
+          <div class="hero-signature">
+            <span class="sig-name" th:text="${agent.name}">Sindhu Jakka</span>
+            <span class="sig-title">Real Estate Agent</span>
+          </div>
+        </div>
+
+        <!-- Text panel -->
+        <div class="col-md-6 hero-text-panel">
+          <span class="meet-script">Meet</span>
+          <h1 th:text="${agent.name}">Sindhu Jakka</h1>
+          <div class="hero-divider">
+            <span class="line"></span>
+            <span>&#8962;</span>
+            <span class="line"></span>
+          </div>
+          <p class="speciality-text" th:text="${agent.speciality}">Residential and Commercial Multi-family real estate</p>
+          <div>
+            <a th:href="@{/contact}" class="btn btn-primary btn-lg">Book a Consultation</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Top Reviews -->
+    <div class="review-section mt-5">
+      <h3 class="mb-4">Top Reviews</h3>
+      <div class="row g-3 align-items-start">
+        <div th:each="review : ${reviews}" class="col-md-4">
+          <div class="card review-card p-4">
+            <div class="star-rating mb-2">
+              <span th:each="i : ${#numbers.sequence(1, review.rating)}">&#9733;</span>
+            </div>
+            <p class="review-text fst-italic mb-3" th:text="${review.comment}">Comment</p>
+            <small class="reviewer-name"
+                   th:text="${review.user != null ? review.user.fullName : 'Anonymous'}">
+              Reviewer Name
+            </small>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+    <!-- After existing Top Reviews section -->
+    <div th:if="${googleReviews != null and !googleReviews.isEmpty()}" class="mt-4">
+      <div class="row g-3 align-items-start">
+        <div th:each="review : ${googleReviews}" class="col-md-4">
+          <div class="card review-card p-4">
+            <div class="star-rating mb-2">
+              <span th:each="i : ${#numbers.sequence(1, review['rating'])}">&#9733;</span>
+            </div>
+            <p class="card-text fst-italic mb-3" th:text="${review['text']}">Comment</p>
+            <small class="reviewer-name" th:text="${review['author_name']}">Reviewer</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div th:if="${reviews == null or reviews.isEmpty()}"
+           class="text-muted fst-italic mt-3">
+        No reviews yet.
+      </div>
+    </div>
+
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 80 });</script>
+</body>
+</html>

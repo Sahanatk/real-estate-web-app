@@ -1,0 +1,55 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# ══════════════════════════════════════
+# SENSITIVE - Never commit these
+# ══════════════════════════════════════
+src/main/resources/application.properties
+
+# ══════════════════════════════════════
+# Uploaded photos - too large for Git
+# ══════════════════════════════════════
+src/main/resources/static/images/listings/
+src/main/resources/static/images/agent.jpg
+src/main/resources/static/images/agentHomePage.JPG
+
+# ══════════════════════════════════════
+# Fonts - too large for Git
+# ══════════════════════════════════════
+src/main/resources/static/fonts/
+
+# ══════════════════════════════════════
+# macOS system files
+# ══════════════════════════════════════
+.DS_Store
