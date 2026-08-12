@@ -35,7 +35,7 @@ build/
 # ══════════════════════════════════════
 # SENSITIVE - Never commit these
 # ══════════════════════════════════════
-src/main/resources/application.properties
+src/main/resources/application-local.properties
 
 # ══════════════════════════════════════
 # Uploaded photos - too large for Git
