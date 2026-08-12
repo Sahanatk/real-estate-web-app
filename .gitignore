@@ -53,4 +53,3 @@ src/main/resources/static/fonts/
 # macOS system files
 # ══════════════════════════════════════
 .DS_Store
-src/main/java/com/example/myOwnRealtorWebsite/config/SecurityConfig.java

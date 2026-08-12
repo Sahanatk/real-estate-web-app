@@ -62,7 +62,7 @@ public class passwordResetService {
                         "http://localhost:8080/reset-password?token=" + token + "\n\n" +
                         "This link expires in 30 minutes.\n\n" +
                         "If you didn't request this, please ignore this email.\n\n" +
-                        "Best regards,\nSindhu Jakka - MyOwnRealtor"
+                        "Best regards,\nSindhu Jakka "
         );
         mailSender.send(message);
     }
