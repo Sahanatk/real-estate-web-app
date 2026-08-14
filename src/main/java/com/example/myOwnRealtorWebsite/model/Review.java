@@ -19,6 +19,12 @@ public class Review {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "visitor_name")
+    private String visitorName;
+
+    public String getVisitorName() { return visitorName; }
+    public void setVisitorName(String visitorName) { this.visitorName = visitorName; }
+
     public Long getId() {
         return id;
     }
@@ -78,7 +84,7 @@ public class Review {
     private String agentName;     //the agent being reviewed
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "user_id",nullable = true)
     private User user; // the person writing the review
 
     @Column(columnDefinition = "TEXT")

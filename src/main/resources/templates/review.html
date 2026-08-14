@@ -52,8 +52,8 @@
             </div>
             <p class="review-text fst-italic mb-3" th:text="${review.comment}">Review text</p>
             <small class="reviewer-name"
-                   th:text="${review.user != null ? review.user.fullName : 'Anonymous'}">
-              Reviewer
+                   th:text="${review.user != null ? review.user.fullName : (review.visitorName != null ? review.visitorName : 'Anonymous')}">
+              Reviewer Name
             </small>
           </div>
         </div>

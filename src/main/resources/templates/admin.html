@@ -164,7 +164,10 @@
           <tbody>
           <tr th:each="review : ${pendingReviews}">
             <td>
-              <span class="reviewer-name" th:text="${review.user.fullName}">Author</span>
+              <span class="reviewer-name"
+                    th:text="${review.user != null ? review.user.fullName : (review.visitorName != null ? review.visitorName : 'Anonymous')}">
+                    Author
+              </span>
             </td>
             <td>
                 <span class="star-rating">
