@@ -75,7 +75,6 @@ public class welcomeController {
             // Anonymous user
             review.setVisitorName(visitorName);
         }
-
         review.setAgentName("Sindhu Jakka");
         review.setStatus("pending");
         reviewServ.saveReview(review);
