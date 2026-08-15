@@ -18,62 +18,13 @@
       <div class="container text-center">
         <h1>Share Your Experience</h1>
         <div class="gold-line"></div>
-        <p>Your feedback helps others make confident decisions.</p>
+        <p>Your feedback helps others make confident real estate decisions.</p>
       </div>
     </div>
 
     <div class="container py-5">
       <div class="row justify-content-center">
         <div class="col-md-7">
-
-
-          <!-- Anonymous user — show login/register prompt -->
-<!--          <div sec:authorize="isAnonymous()" class="review-form-card text-center" data-aos="fade-up">-->
-<!--            <h2>Leave a Review</h2>-->
-<!--            <div class="star-preview">&#9733;&#9733;&#9733;&#9733;&#9733;</div>-->
-<!--            <div class="form-divider"></div>-->
-<!--            <p style="font-family:'Roboto',sans-serif; color:#666; margin-bottom:1.5rem; line-height:1.7;">-->
-<!--              To leave a review, you need an account.<br>-->
-<!--              It only takes a minute to sign up!-->
-<!--            </p>-->
-<!--            <div class="d-flex gap-3 justify-content-center flex-wrap">-->
-<!--              <a th:href="@{/login}"-->
-<!--                 style="background:#14233B; color:white; border:none; border-radius:4px;-->
-<!--                        padding:0.75rem 2rem; font-family:'Roboto',sans-serif; font-size:0.85rem;-->
-<!--                        font-weight:600; letter-spacing:1px; text-transform:uppercase;-->
-<!--                        text-decoration:none; display:inline-block; transition:background 0.25s;">-->
-<!--                Login-->
-<!--              </a>-->
-<!--              <a th:href="@{/register}"-->
-<!--                 style="background:transparent; color:#14233B; border:1.5px solid #14233B;-->
-<!--                        border-radius:4px; padding:0.75rem 2rem; font-family:'Roboto',sans-serif;-->
-<!--                        font-size:0.85rem; font-weight:600; letter-spacing:1px;-->
-<!--                        text-transform:uppercase; text-decoration:none; display:inline-block;-->
-<!--                        transition:background 0.25s;">-->
-<!--                Create Account-->
-<!--              </a>-->
-<!--            </div>-->
-<!--          </div>-->
-
-          <!-- Name field for anonymous users -->
-<!--          <div sec:authorize="isAnonymous()" class="mb-4 text-start">-->
-<!--            <label class="form-label-custom">Your Name</label>-->
-<!--            <input type="text" name="visitorName"-->
-<!--                   id="visitorNameInput"-->
-<!--                   class="rating-select"-->
-<!--                   placeholder="Enter your name"-->
-<!--                   required-->
-<!--                   oninput="updateNamePreview(this.value)">-->
-<!--          </div>-->
-
-          <!-- Live name preview for anonymous users -->
-          <div sec:authorize="isAnonymous()" class="mb-4 text-center">
-            <p class="reviewer-tag">Reviewing as</p>
-            <span id="namePreview" class="reviewer-name">Your Name</span>
-          </div>
-
-
-          <!-- Authenticated user — show review form -->
           <div class="review-form-card" data-aos="fade-up">
 
             <div th:if="${success}" class="success-banner mb-4">
@@ -81,44 +32,12 @@
             </div>
 
             <h2>Leave a Review</h2>
-
             <div class="star-preview">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-
             <div class="form-divider"></div>
-
-            <div sec:authorize="isAuthenticated()" class="mb-4">
-              <p class="reviewer-tag">Reviewing as</p>
-              <span sec:authentication="name" class="reviewer-name">Username</span>
-            </div>
-
-<!--            <form th:action="@{/reviews}" th:object="${review}" method="post">-->
-
-<!--              <div class="mb-4 text-start">-->
-<!--                <label class="form-label-custom">Your Rating</label>-->
-<!--                <select th:field="*{rating}" class="rating-select">-->
-<!--                  <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; — 5 · Excellent</option>-->
-<!--                  <option value="4">&#9733;&#9733;&#9733;&#9733; — 4 · Good</option>-->
-<!--                  <option value="3">&#9733;&#9733;&#9733; — 3 · Average</option>-->
-<!--                  <option value="2">&#9733;&#9733; — 2 · Below Average</option>-->
-<!--                  <option value="1">&#9733; — 1 · Poor</option>-->
-<!--                </select>-->
-<!--              </div>-->
-
-<!--              <div class="mb-4 text-start">-->
-<!--                <label class="form-label-custom">Your Comment</label>-->
-<!--                <textarea th:field="*{comment}"-->
-<!--                          class="comment-area"-->
-<!--                          placeholder="Tell others about your experience working with Sindhu..."></textarea>-->
-<!--              </div>-->
-
-<!--              <button type="submit" class="btn-post-review">Post Review &#8594;</button>-->
-
-<!--            </form>-->
-
 
             <form th:action="@{/reviews}" th:object="${review}" method="post">
 
-              <!-- Name field for anonymous users - MUST be inside form -->
+              <!-- Name field for anonymous users - inside form -->
               <div sec:authorize="isAnonymous()" class="mb-4 text-start">
                 <label class="form-label-custom">Your Name</label>
                 <input type="text" name="visitorName"
@@ -129,8 +48,14 @@
                        oninput="updateNamePreview(this.value)">
               </div>
 
+              <!-- Live name preview for anonymous -->
+              <div sec:authorize="isAnonymous()" class="mb-4 text-center">
+                <p class="reviewer-tag">Reviewing as</p>
+                <span id="namePreview" class="reviewer-name">Your Name</span>
+              </div>
+
               <!-- Show username for logged in users -->
-              <div sec:authorize="isAuthenticated()" class="mb-4">
+              <div sec:authorize="isAuthenticated()" class="mb-4 text-center">
                 <p class="reviewer-tag">Reviewing as</p>
                 <span sec:authentication="name" class="reviewer-name">Username</span>
               </div>
@@ -157,7 +82,6 @@
 
             </form>
           </div>
-
         </div>
       </div>
     </div>
@@ -170,7 +94,7 @@
   AOS.init({ duration: 800, once: true, offset: 80 });
 
   function updateNamePreview(value) {
-      document.getElementById('namePreview').textContent = value || 'Your Name';
+    document.getElementById('namePreview').textContent = value || 'Your Name';
   }
 </script>
 </body>
