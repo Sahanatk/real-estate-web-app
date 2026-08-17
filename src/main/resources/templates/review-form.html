@@ -13,7 +13,6 @@
 <div th:replace="~{fragments/layout :: main(~{::section})}">
   <section>
 
-    <!-- Hero -->
     <div class="review-hero">
       <div class="container text-center">
         <h1>Share Your Experience</h1>
@@ -37,27 +36,18 @@
 
             <form th:action="@{/reviews}" th:object="${review}" method="post">
 
-              <!-- Name field for anonymous users - inside form -->
-              <div sec:authorize="isAnonymous()" class="mb-4 text-start">
+              <div class="mb-4 text-start">
                 <label class="form-label-custom">Your Name</label>
                 <input type="text" name="visitorName"
                        id="visitorNameInput"
                        class="rating-select"
                        placeholder="Enter your name"
-                       required
                        oninput="updateNamePreview(this.value)">
               </div>
 
-              <!-- Live name preview for anonymous -->
-              <div sec:authorize="isAnonymous()" class="mb-4 text-center">
+              <div class="mb-4 text-center">
                 <p class="reviewer-tag">Reviewing as</p>
                 <span id="namePreview" class="reviewer-name">Your Name</span>
-              </div>
-
-              <!-- Show username for logged in users -->
-              <div sec:authorize="isAuthenticated()" class="mb-4 text-center">
-                <p class="reviewer-tag">Reviewing as</p>
-                <span sec:authentication="name" class="reviewer-name">Username</span>
               </div>
 
               <div class="mb-4 text-start">
@@ -92,7 +82,6 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
   AOS.init({ duration: 800, once: true, offset: 80 });
-
   function updateNamePreview(value) {
     document.getElementById('namePreview').textContent = value || 'Your Name';
   }
