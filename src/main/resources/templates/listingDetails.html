@@ -164,11 +164,7 @@
 
       <!-- Left: details -->
       <div class="col-md-8">
-        <h1 class="property-address" th:text="${listing.street}">123 Main St</h1>
-        <p class="property-location"
-           th:text="${listing.city + ', ' + listing.state + ' ' + listing.zipCode}">
-          City, State
-        </p>
+        <p class="property-location" th:text="${listing.city}">City</p>
         <p class="property-price"
            th:text="'$' + ${#numbers.formatDecimal(listing.listingPrice, 0, 'COMMA', 0, 'POINT')}">
           $500,000
