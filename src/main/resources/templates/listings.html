@@ -46,11 +46,7 @@
 
             <div class="card-body">
               <h5 class="card-title" th:text="${listing.street}">123 Main St</h5>
-              <p class="listing-location">
-                <span th:text="${listing.city}">City</span>,
-                <span th:text="${listing.state}">State</span>
-                <span th:text="${listing.zipCode}">Zip</span>
-              </p>
+              <p class="listing-location" th:text="${listing.city}">City</p>
               <p class="listing-price"
                  th:text="'$' + ${#numbers.formatDecimal(listing.listingPrice, 1, 'COMMA', 0, 'POINT')}">
                 $500,000
