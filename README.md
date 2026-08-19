@@ -13,7 +13,7 @@ A production-ready real estate web application built with Java Spring Boot, feat
 - View detailed property information with left/right photo navigation
 - Read client reviews with star ratings
 - Contact agent directly from listing page
-- Submit reviews (requires account)
+- Submit reviews 
 - Anonymous contact form with name and email
 
 ### Admin Panel
