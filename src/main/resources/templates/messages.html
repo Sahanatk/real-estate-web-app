@@ -65,7 +65,7 @@
                 <a th:if="${inquiry.property != null}"
                    class="listing-link"
                    th:href="@{/listings/{id}(id=${inquiry.property.listingId})}"
-                   th:text="${inquiry.property.street}">123 Main St</a>
+                   th:text="${inquiry.property != null ? inquiry.property.street : 'General inquiry'}"></a>
                 <span th:if="${inquiry.property == null}"
                       style="font-style:italic; color:#bbb; font-size:0.82rem;">
                     General inquiry

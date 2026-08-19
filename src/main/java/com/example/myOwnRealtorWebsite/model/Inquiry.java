@@ -14,7 +14,7 @@ public class Inquiry {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id",nullable = true)
     private User user;
 
@@ -24,6 +24,11 @@ public class Inquiry {
     @Column(name = "visitor_email")
     private String visitorEmail;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "listing_id",nullable = true)
+    private Listing property;
+
+    private String message;
 
     public String getVisitorName() { return visitorName; }
     public void setVisitorName(String visitorName) { this.visitorName = visitorName; }
@@ -70,11 +75,7 @@ public class Inquiry {
         this.status = status;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "listing_id",nullable = true)
-    private Listing property;
 
-    private String message;
     //private LocalDateTime requestDate;
 
     @Enumerated(EnumType.STRING)
