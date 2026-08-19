@@ -29,9 +29,8 @@
                     Send a Message
                 </h2>
                 <!-- Listing context if coming from a property page -->
-                <div th:if="${listing != null}" class="listing-info">
-                    <strong th:text="${listing.street}">123 Main St</strong>
-                    <span th:text="' — ' + listing.city + ', ' + listing.state"></span>
+                <div th:if="${listing != null}" class="listing-info mb-3">
+                    <strong th:text="${listing.city}">City</strong>
                     <span th:text="' · $' + ${#numbers.formatDecimal(listing.listingPrice, 0, 'COMMA', 0, 'POINT')}"></span>
                 </div>
 
