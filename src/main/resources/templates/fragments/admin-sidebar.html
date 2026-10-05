@@ -59,9 +59,12 @@
   <a class="sidebar-link" th:href="@{/}">
     <span class="sidebar-icon">&#8592;</span> Back to Site
   </a>
-  <a class="sidebar-link sidebar-link-logout" th:href="@{/logout}">
-    <span class="sidebar-icon">&#10005;</span> Logout
-  </a>
+  <form sec:authorize="isAuthenticated()"
+        th:action="@{/logout}"
+        method="post"
+        class="d-inline m-0">
+    <button type="submit" class="btn-nav-logout">Logout</button>
+  </form>
 
 </nav>
 

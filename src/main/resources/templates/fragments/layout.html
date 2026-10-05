@@ -45,10 +45,13 @@
                        class="btn-nav-login"
                        th:href="@{/login}">Login</a>
 
-                    <!-- Show Logout when logged in -->
-                    <a sec:authorize="isAuthenticated()"
-                       class="btn-nav-logout"
-                       th:href="@{/logout}">Logout</a>
+                    <!-- Show Logout when logged in (POST form required for CSRF) -->
+                    <form sec:authorize="isAuthenticated()"
+                          th:action="@{/logout}"
+                          method="post"
+                          class="d-inline m-0">
+                        <button type="submit" class="btn-nav-logout">Logout</button>
+                    </form>
 
                     <!-- Admin only -->
                     <a sec:authorize="hasRole('ADMIN')"

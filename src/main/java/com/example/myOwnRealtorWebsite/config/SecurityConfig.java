@@ -48,7 +48,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable for simple API testing
+//                .csrf(AbstractHttpConfigurer::disable) // Disable for simple API testing
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authenticationManager(authenticationManager())
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/properties/**").permitAll() // Public access
@@ -88,9 +89,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
-
-    @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsService() {
         UserDetails admin = User.withUsername(adminUsername)
                 .password(passwordEncoder().encode(adminPassword))
@@ -100,15 +98,12 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin);
     }
 
-
-    @Bean
     public DaoAuthenticationProvider dbAuthProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
-    @Bean
     public DaoAuthenticationProvider inMemoryAuthProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(inMemoryUserDetailsService());
         provider.setPasswordEncoder(passwordEncoder());
