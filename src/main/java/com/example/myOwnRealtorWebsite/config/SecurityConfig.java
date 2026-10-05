@@ -48,7 +48,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf(AbstractHttpConfigurer::disable) // Disable for simple API testing
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authenticationManager(authenticationManager())
                 .authorizeHttpRequests(auth -> auth
@@ -83,7 +82,6 @@ public class SecurityConfig {
                     .defaultSuccessUrl("/", true) //force redirects here after login
                     .permitAll()
                 )
-               // .httpBasic(withDefaults()); // Use a simple login popup in browser
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
