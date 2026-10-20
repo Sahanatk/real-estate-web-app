@@ -8,9 +8,11 @@ import com.example.myOwnRealtorWebsite.repository.listingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class listingService {
@@ -50,7 +52,13 @@ public class listingService {
         // 1. Process Features: Only add if text isn't blank
         if (features != null && ! features.isBlank()) {
             //listing.setPropertyFeatures(Arrays.asList(features.split("\\s*,\\s*")));
-            listing.setPropertyFeatures(Arrays.asList(features.split("\\s*,\\s*(?=[^0-9])")));
+           // listing.setPropertyFeatures(Arrays.asList(features.split("\\s*,\\s*(?=[^0-9])")));
+            List<String> featureList = Arrays.stream(
+                            features.split("\\s*(?:(?<!\\d),|,(?!\\d))\\s*"))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toCollection(ArrayList::new));
+            listing.setPropertyFeatures(featureList);
         }
         // 2. Process Photos: Only add if text isn't blank
         if (photoUrls != null && !photoUrls.isEmpty()) {

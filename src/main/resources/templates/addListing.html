@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>Add New Listing — Sindhu Jakka Real Estate</title>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -240,17 +242,29 @@
         <div class="col-12">
           <div class="section-divider">Features & Media</div>
         </div>
+<!--        <div class="col-12">-->
+<!--          <label class="form-label">Property Features</label>-->
+<!--          <input type="text" name="propertyFeatures" class="form-control"-->
+<!--                 placeholder="Pool, HVAC, Mountain View, Garden">-->
+<!--          <div class="form-text">Separate features with commas.</div>-->
+<!--          <div th:if="${listing.propertyFeatures != null and !listing.propertyFeatures.isEmpty()}"-->
+<!--               class="mt-2 d-flex flex-wrap">-->
+<!--            <span th:each="feature : ${listing.propertyFeatures}"-->
+<!--                  class="feature-tag"-->
+<!--                  th:text="${feature}"></span>-->
+<!--          </div>-->
+<!--        </div>-->
+
         <div class="col-12">
-          <label class="form-label">Property Features</label>
-          <input type="text" name="propertyFeatures" class="form-control"
-                 placeholder="Pool, HVAC, Mountain View, Garden">
-          <div class="form-text">Separate features with commas.</div>
-          <div th:if="${listing.propertyFeatures != null and !listing.propertyFeatures.isEmpty()}"
-               class="mt-2 d-flex flex-wrap">
-            <span th:each="feature : ${listing.propertyFeatures}"
-                  class="feature-tag"
-                  th:text="${feature}"></span>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label for="description" class="form-label mb-0">Description</label>
+            <button type="button" id="generateBtn" class="btn btn-outline-primary btn-sm">
+              ✨ Generate description
+            </button>
           </div>
+          <textarea id="description" th:field="*{description}" class="form-control" rows="6" placeholder="Write a description, or fill in the details above and click Generate."></textarea>
+          <div class="form-text">The AI uses only the details entered above. Always review before publishing.</div>
+          <small id="aiStatus" class="text-muted"></small>
         </div>
 
         <!-- Photos -->
@@ -258,7 +272,7 @@
           <label class="form-label">Property Photos</label>
           <input type="file" name="photoFiles" class="form-control"
                  multiple accept="image/*">
-          <div class="form-text">Select multiple photos (JPG, PNG, WebP — max 10MB each).</div>
+          <div class="form-text">Select multiple photos (JPG, PNG, WebP — max 10MB each)</div>
           <div th:if="${listing.photos != null and !listing.photos.isEmpty()}"
                class="mt-3 d-flex flex-wrap gap-2">
             <img th:each="url : ${listing.photos}"
@@ -275,10 +289,78 @@
             Publish Listing &#8594;
           </button>
         </div>
-
       </form>
     </div>
+      <!-- AI description generator -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const btn = document.getElementById('generateBtn');
+          if (!btn) return;
+          const status = document.getElementById('aiStatus');
+          const descBox = document.getElementById('description');
 
+          // Read a field by id; empty -> null
+          const val = id => {
+            const el = document.getElementById(id);
+            const v = el ? el.value.trim() : '';
+            return v === '' ? null : v;
+          };
+          const num = id => { const v = val(id); return v === null ? null : Number(v); };
+
+          // CSRF token: from meta tags, or from the hidden input Thymeleaf adds to the form
+          function csrf() {
+            const t = document.querySelector('meta[name="_csrf"]');
+            const h = document.querySelector('meta[name="_csrf_header"]');
+            if (t && h && t.content) return { header: h.content, token: t.content };
+            const hidden = document.querySelector('input[name="_csrf"]');
+            return { header: 'X-CSRF-TOKEN', token: hidden ? hidden.value : '' };
+          }
+
+          btn.addEventListener('click', async function () {
+            if (!val('propertyType') && !val('bedrooms') && !val('propertyFeatures')) {
+              status.textContent = 'Fill in some property details first.';
+              return;
+            }
+            if (descBox.value.trim() && !confirm('Replace the current description?')) return;
+
+            const payload = {
+              propertyType: val('propertyType'),
+              city: val('city'),
+              state: val('state'),
+              bedrooms: num('bedrooms'),
+              bathrooms: num('bathrooms'),
+              squareFootage: num('squareFootage'),
+              yearBuilt: num('yearBuilt'),
+              hoaFees: num('hoaFees'),
+              highlights: val('propertyFeatures')
+            };
+
+            const c = csrf();
+            btn.disabled = true;
+            btn.textContent = '⏳ Generating...';
+            status.textContent = '';
+
+            try {
+              const res = await fetch('/admin/listings/generate-description', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', [c.header]: c.token },
+                body: JSON.stringify(payload)
+              });
+              const data = await res.json().catch(() => ({}));
+              if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+              if (!data.description) throw new Error('Your session may have expired. Please refresh and log in again.');
+
+              descBox.value = data.description;
+              status.textContent = 'Draft generated. Please review and edit before publishing.';
+            } catch (e) {
+              status.textContent = e.message;
+            } finally {
+              btn.disabled = false;
+              btn.textContent = '✨ Generate description';
+            }
+          });
+        });
+      </script>
   </section>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

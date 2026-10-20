@@ -52,7 +52,7 @@ public class listingController {
     @PreAuthorize("hasRole('ADMIN')")
     public String saveListing(@Valid @ModelAttribute("listing") Listing listing,
                               BindingResult bindingResult,
-                              @RequestParam("propertyFeatures") String features,
+                              @RequestParam(value = "propertyFeatures",required = false, defaultValue = "") String features,
                               @RequestParam("photoFiles") MultipartFile[] photoFiles,
                               RedirectAttributes redirectAttributes,Model model) throws IOException {
 
@@ -93,7 +93,7 @@ public class listingController {
     @PreAuthorize("hasRole('ADMIN')")
     public String updateListing(@PathVariable Long id,
                                 @ModelAttribute Listing listing,
-                                @RequestParam("propertyFeatures") String features,
+                                @RequestParam(value = "propertyFeatures",required = false, defaultValue = "") String features,
                                 @RequestParam("photoFiles") MultipartFile[] photoFiles,
                                 RedirectAttributes redirectAttributes) throws IOException {
         listing.setListingId(id);
