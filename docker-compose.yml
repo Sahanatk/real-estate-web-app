@@ -1,0 +1,11 @@
+services:
+  app:
+    image: pacific-homes
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/dreamhomes?useSSL=false&serverTimezone=UTC
+    volumes:
+      - ./src/main/resources/application-local.properties:/app/config/application-local.properties:ro

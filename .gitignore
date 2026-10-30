@@ -53,3 +53,5 @@ src/main/resources/static/images/agentHomePage.JPG
 # macOS system files
 # ══════════════════════════════════════
 .DS_Store
+
+local.env
